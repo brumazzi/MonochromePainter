@@ -1,0 +1,14 @@
+levels/*.json
+*.dll
+*.exe
+MonocromePainter
+w64-libs
+*.sh
+jsoncpp-1.9.5
+Errors
+gmap
+Makefile
+CMakeCache.txt
+cmake_install.cmake
+CMakeFiles
+.vscode
