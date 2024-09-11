@@ -51,6 +51,8 @@ class Stage{
     bool hasKey();
     bool tryRespawn();
 
+    void updateTexture();
+
     private:
     unsigned short tileSize;
     unsigned int mapWidth;

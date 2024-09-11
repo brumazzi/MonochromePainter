@@ -90,14 +90,14 @@ int main(int argc, char **argv){
     loadAsset("Animated", "MonsterWalkDamage", "assets/monster_walk_damage.png");
     loadAsset("Animated", "MonsterWalkDamageStop", "assets/monster_walk_damage.png");
 
-    auto texture = loadAsset("tileset", "default", "assets/map.png");
+    loadAsset("tileset", "default", "assets/map.png");
+    loadAsset("tileset", "MAP_GREEN", "assets/map_green.png");
     auto life = loadAsset("Static", "Life", "assets/life.png");
 
     Game *game = new Game();
     Stage *stage = new Stage(game);
 
     struct dirent *de;
-    string path = "levels/";
 
     while((de = readdir(dir))){
         if(!strcmp(de->d_name, ".") || !strcmp(de->d_name, "..")) continue;
@@ -109,7 +109,7 @@ int main(int argc, char **argv){
 
     std::sort(game->levelList.begin(), game->levelList.end());
 
-    stage->loadStage(game->levelList[10], texture);
+    stage->loadStage(game->levelList[0], getAsset("tileset", game->mapList[game->mapIndex]));
 
     char score[16];
 

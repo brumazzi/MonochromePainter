@@ -37,6 +37,8 @@ class Game{
     Stage *getStage();
     Camera2D getCamera();
     vector<string> levelList;
+    vector<string> mapList;
+    unsigned int mapIndex;
 
     private:
     Camera2D camera;

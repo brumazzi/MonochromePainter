@@ -14,6 +14,9 @@ Game::Game(){
     this->toDark = false;
     this->isNextLevel = false;
     this->displayAlpha = 0;
+    this->mapIndex = 0;
+    this->mapList.push_back("default");
+    this->mapList.push_back("MAP_GREEN");
 }
 Game::~Game(){
     delete this->stage;
@@ -40,7 +43,7 @@ void Game::update(){
                     this->levelIndex++;
                     delete this->stage;
                     this->stage = new Stage(this);
-                    this->stage->loadStage(this->levelList[this->levelIndex], getAsset("tileset", "default"));
+                    this->stage->loadStage(this->levelList[this->levelIndex], getAsset("tileset", this->mapList[this->mapIndex]));
                 }
                 else {
                     // TODO: create goToLevel Function

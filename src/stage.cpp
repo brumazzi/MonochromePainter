@@ -227,3 +227,15 @@ bool Stage::isLoaded(){ return this->_isLoaded; }
 bool Stage::isCompleted(){ return this->_isCompleted; }
 
 bool Stage::hasKey(){ return this->_hasKey; }
+
+
+void Stage::updateTexture(){
+    Texture texture = getAsset("tileset", this->game->mapList[this->game->mapIndex]);
+    for(auto iter: this->objects){
+        for(auto object: iter.second){
+            if(object->getTexture().id == this->texture.id){
+                object->setTexture(texture, 1);
+            }
+        }
+    }
+}

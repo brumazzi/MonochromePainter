@@ -61,6 +61,9 @@ void Player::itemCollisionCallback(Object *self, Object *object, Vector2 normal)
                 ((Door *) self->getStage()->getObjects("DoorNext")[0])->open();
             }else if(!group.compare("ItemLife")){
                 self->getGame()->addLife();
+            }else if(!group.compare("ItemPaint")){
+                self->getGame()->mapIndex++;
+                self->getStage()->updateTexture();
             }
             object->destroy();
         }
