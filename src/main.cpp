@@ -13,8 +13,6 @@
 #include <cstdio>
 #include <string.h>
 
-namespace fs = std::filesystem;
-
 int main(int argc, char **argv){
     initTexts();
 
@@ -36,10 +34,13 @@ int main(int argc, char **argv){
 
         return 0;
     }
+
+    Texture title = LoadTexture("assets/title.png");
     menu:
     while(true){
         BeginDrawing();{
             ClearBackground(BLACK);
+            DrawTexture(title, 0, 0, WHITE);
             showMenu(option, saveFile);
         }EndDrawing();
 
@@ -80,11 +81,14 @@ int main(int argc, char **argv){
     loadAsset("Animated", "PlayerWalk", "assets/player_walk.png");
     loadAsset("Animated", "PlayerJump", "assets/player_jump.png");
     loadAsset("Animated", "MonsterWalk", "assets/monster_walk.png");
+    loadAsset("Animated", "MonsterWalkStop", "assets/monster_walk.png");
     loadAsset("Animated", "MonsterFly", "assets/monster_fly.png");
     loadAsset("Animated", "MonsterFlyStop", "assets/monster_fly.png");
     loadAsset("Animated", "Spider", "assets/spider.png");
     loadAsset("Animated", "MonsterFlyDamage", "assets/monster_fly_damage.png");
+    loadAsset("Animated", "MonsterFlyDamageStop", "assets/monster_fly_damage.png");
     loadAsset("Animated", "MonsterWalkDamage", "assets/monster_walk_damage.png");
+    loadAsset("Animated", "MonsterWalkDamageStop", "assets/monster_walk_damage.png");
 
     auto texture = loadAsset("tileset", "default", "assets/map.png");
     auto life = loadAsset("Static", "Life", "assets/life.png");
@@ -101,12 +105,11 @@ int main(int argc, char **argv){
         string levelPath = "levels/";
         levelPath.append(de->d_name);
         game->levelList.push_back(levelPath);
-        std::cout <<levelPath << std::endl;
     }
 
     std::sort(game->levelList.begin(), game->levelList.end());
 
-    stage->loadStage(game->levelList[0], texture);
+    stage->loadStage(game->levelList[10], texture);
 
     char score[16];
 

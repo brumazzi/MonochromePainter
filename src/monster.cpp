@@ -11,7 +11,9 @@ Monster::Monster(): NPC(){
 bool Monster::update(){
     if(this->directionMovement.x != 0){
         this->applyForceX(this->getMovementSpeed()*this->directionMovement.x);
+        this->applyForceY(0);
     }else if(this->directionMovement.y != 0){
+        this->applyForceX(0);
         this->applyForceY(this->getMovementSpeed()*this->directionMovement.y);
     }
 
@@ -29,7 +31,7 @@ void Monster::setGroup(string group){
 
     if(group.find("Walk") != string::npos){
         this->directionMovement.x = 1;
-    }else if(group.find("Fly") != string::npos){
+    }else if(group.find("Fly") != string::npos || group.find("Spider") != string::npos){
         this->directionMovement.y = 1;
     }
 }
@@ -48,9 +50,9 @@ void Monster::directionCollisionCallback(Object *self, Object *object, Vector2 n
     }
 
     if(!group.compare(0, 15, "InvertDirection")){
-        if(group.find("LH") != string::npos) ((Monster *) self)->directionMovement.x = -1;
-        if(group.find("RH") != string::npos) ((Monster *) self)->directionMovement.x = 1;
-        if(group.find("UH") != string::npos) ((Monster *) self)->directionMovement.y = -1;
-        if(group.find("DH") != string::npos) ((Monster *) self)->directionMovement.y = 1;
+        if(group.find("LH") != string::npos) ((Monster *) self)->directionMovement = {-1, 0};
+        if(group.find("RH") != string::npos) ((Monster *) self)->directionMovement = {1, 0};
+        if(group.find("UH") != string::npos) ((Monster *) self)->directionMovement = {0, -1};
+        if(group.find("DH") != string::npos) ((Monster *) self)->directionMovement = {0, 1};
     }
 }

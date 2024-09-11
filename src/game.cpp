@@ -8,7 +8,7 @@ Game::Game(){
     this->camera.rotation = 0;
     this->camera.zoom = GetScreenWidth()/CAMERA_WIDTH;
     this->score = 0;
-    this->life = 3;
+    this->life = 10;
     this->_gameOver = false;
     this->levelIndex = 0;
     this->toDark = false;

@@ -100,10 +100,10 @@ bool Stage::loadStage(string path, Texture tex){
                 object->setAnimated(true);
             }else if(!layerName.compare("DoorNext")){
                 object = new Door();
-                object->usePhysic(true, GRAVITY);
+                object->usePhysic(false, GRAVITY);
                 this->objects[string("DoorNext")].push_back(object);
                 object->setTexture(getAsset("Static", "DoorClose"), 1);
-                object->setAnimated(true);
+                object->setAnimated(false);
             }else if(!layerName.compare("Player")){
                 object = new Player();
                 object->usePhysic(true, GRAVITY);

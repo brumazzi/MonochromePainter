@@ -50,7 +50,20 @@ void Player::itemCollisionCallback(Object *self, Object *object, Vector2 normal)
     std::string group = object->getGroup();
 
     if(!group.compare(0, 4, "Item")){
-        if(group.compare("ItemJump")) object->destroy();
+        if(group.compare(0, 8, "ItemJump")){
+            if(object->isDestroyed()) return;
+
+            std::string group = object->getGroup();
+            if(!group.compare("ItemPoint")){
+                self->getGame()->addScore(5);
+            }else if(!group.compare("ItemKey")){
+                self->getStage()->getKey();
+                ((Door *) self->getStage()->getObjects("DoorNext")[0])->open();
+            }else if(!group.compare("ItemLife")){
+                self->getGame()->addLife();
+            }
+            object->destroy();
+        }
     }
 }
 
@@ -62,7 +75,7 @@ void Player::respawnCollisionCallback(Object *self, Object *object, Vector2 norm
 }
 
 void Player::jumpCollisionCallback(Object *self, Object *object, Vector2 normal){
-    if(!object->getGroup().compare("ItemJump") && normal.y == -1){
+    if(!object->getGroup().compare(0, 8, "ItemJump") && normal.y == -1){
         self->applyForceY(-6.5);
     }
 }

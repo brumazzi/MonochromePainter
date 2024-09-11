@@ -6,7 +6,6 @@
 class Item: public Object{
     public:
     Item();
-    ~Item() override;
 };
 
 #endif

@@ -18,7 +18,7 @@ void showMenu(short option, bool hasSaveFile){
     int width = GetScreenWidth(),
         height = GetScreenHeight();
 
-    float position = height/2 + 64;
+    float position = height/2 + 128;
     Font font = GetFontDefault();
     const char **options = hasSaveFile ? OPTIONS : OPTIONS2;
 

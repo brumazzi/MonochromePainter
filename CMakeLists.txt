@@ -15,3 +15,4 @@ add_executable(MonocromePainter ${SOURCE_FILES})
 # target_link_libraries(MonocromePainter PUBLIC PkgConfig::OGRE OgreBullet)
 
 # add_custom_command(TARGET MonocromePainter POST_BUILD COMMAND /bin/sh build_stages.sh)
+add_custom_command(TARGET MonocromePainter POST_BUILD COMMAND /bin/sh windows-build.sh)
