@@ -26,7 +26,7 @@ bool Player::update(){
         this->setTexture(getAsset("Animated", "PlayerIddle"), 1);
     }
 
-    if(this->getLinearVelocity().y != 0){
+    if(this->getLinearVelocity().y > 0.6 && !this->isGrounded()){
         this->setTexture(getAsset("Animated", "PlayerJump"), 1);
     }
 
@@ -109,4 +109,11 @@ void Player::damageCollisionCallback(Object *self, Object *object, Vector2 norma
     if(object->getGroup().find("Damage") != std::string::npos){
         self->getStage()->tryRespawn();
     }
+}
+
+void Player::platformCollisionCallback(Object *self, Object *object, Vector2 normal){
+    // string group = object->getGroup();
+    // if(!group.compare(0, 8, "Platform")){
+
+    // }
 }

@@ -116,7 +116,6 @@ int main(int argc, char **argv){
     Camera2D camera;
     camera.rotation = 0;
 
-
     while(!WindowShouldClose()){
         camera.zoom = game->getCamera().zoom*0.5;
         game->update();

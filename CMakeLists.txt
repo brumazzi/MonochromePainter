@@ -3,7 +3,7 @@ project(MonocromePainter)             # Create project "MonocromePainter"
 set(CMAKE_CXX_STANDARD 17)              # Enable c++17 standard
 
 # Add main.cpp file of the project root directory as a source file
-set(SOURCE_FILES src/main.cpp src/object.cpp src/stage.cpp src/game.cpp src/npc.cpp src/item.cpp src/monster.cpp src/player.cpp src/assets.cpp src/door.cpp src/menu.cpp)
+set(SOURCE_FILES src/main.cpp src/object.cpp src/stage.cpp src/game.cpp src/npc.cpp src/item.cpp src/monster.cpp src/player.cpp src/assets.cpp src/door.cpp src/menu.cpp src/dynamic_ground.cpp)
 include_directories(./include)
 
 find_package(PkgConfig REQUIRED)

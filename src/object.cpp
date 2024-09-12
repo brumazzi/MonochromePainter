@@ -182,7 +182,6 @@ Vector2 Object::testCollision(Object *object){
 
     Rectangle tBounds = object->getCollisionBounds();
     Vector2 offset = this->collisionBoundsOffset;
-    // offset.y -= 2;
     Vector2 normal = {0,0};
 
     if(CheckCollisionRecs(this->getCollisionBounds(), tBounds)){
@@ -204,8 +203,6 @@ Vector2 Object::testCollision(Object *object){
         this->applyCollisionRoles(object, normal);
     }
 
-
-
     return normal;
 }
 void Object::applyCollisionRoles(Object *object, Vector2 normal){
@@ -222,9 +219,11 @@ void Object::applyCollisionRoles(Object *object, Vector2 normal){
             this->position.y = bounds.y - this->size.y + offset.y;
             this->lastPosition.y = bounds.y - this->size.y + offset.y;
         }else if(normal.y == 1){
-            this->position.y = (bounds.y + bounds.height - offset.y);
-            this->lastPosition.y = (bounds.y + bounds.height - offset.y);
-            this->directionForce.y *= -0.4;
+            if(!object->getGroup().compare(0, 4, "Platform")){
+                this->position.y = (bounds.y + bounds.height - offset.y);
+                this->lastPosition.y = (bounds.y + bounds.height - offset.y);
+                this->directionForce.y *= -0.4;
+            }
         }
     }
 

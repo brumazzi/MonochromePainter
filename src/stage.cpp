@@ -7,6 +7,7 @@
 #include <assets.h>
 #include <game.hpp>
 #include <door.hpp>
+#include <dynamic_ground.hpp>
 
 #define GRAVITY 9.8
 #define IS_DECORATION(layer) (!layer.first.compare("DecorationBack") || !layer.first.compare("DecorationFront"))
@@ -81,33 +82,40 @@ bool Stage::loadStage(string path, Texture tex){
             Object *object;
             if(layerName.find("Monster") != std::string::npos){
                 object = new Monster();
-                this->objects[string("Monster")].push_back(object);
+                this->objects["Monster"].push_back(object);
                 object->setAnimated(false);
                 object->usePhysic(true, 0);
                 if(layerName.find("Spider") == std::string::npos) object->setTexture(getAsset("Animated", layerName), 2);
                 else object->setTexture(getAsset("Animated", "Spider"), 1);
             }else if(!layerName.compare(0, 4, "Item")){
                 object = new Item();
-                this->objects[string("Item")].push_back(object);
+                this->objects["Item"].push_back(object);
                 object->setTexture(tex, 1);
                 object->setAnimated(false);
                 object->setTextureOffset(offsetX, offsetY);
             }else if(!layerName.compare(0, 3, "NPC")){
                 object = new NPC();
                 object->usePhysic(true, GRAVITY);
-                this->objects[string("NPC")].push_back(object);
+                this->objects["NPC"].push_back(object);
                 object->setTexture(getAsset("Animated", layerName), 1);
                 object->setAnimated(true);
+            }else if(!layerName.compare(0, 10, "GroundMove")){
+                object = new DynamicGround();
+                object->setTextureOffset(offsetX, offsetY);
+                object->usePhysic(true, 0);
+                object->setTexture(tex, 1);
+                object->setAnimated(false);
+                this->objects["GroundMove"].push_back(object);
             }else if(!layerName.compare("DoorNext")){
                 object = new Door();
                 object->usePhysic(false, GRAVITY);
-                this->objects[string("DoorNext")].push_back(object);
+                this->objects["DoorNext"].push_back(object);
                 object->setTexture(getAsset("Static", "DoorClose"), 1);
                 object->setAnimated(false);
             }else if(!layerName.compare("Player")){
                 object = new Player();
                 object->usePhysic(true, GRAVITY);
-                this->objects[string("Player")].push_back(object);
+                this->objects["Player"].push_back(object);
                 object->setTexture(getAsset("Animated", layerName), 1);
                 object->setAnimated(true);
                 this->player = object;
