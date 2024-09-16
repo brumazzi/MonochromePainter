@@ -10,7 +10,7 @@
 #include <dynamic_ground.hpp>
 
 #define GRAVITY 9.8
-#define IS_DECORATION(layer) (!layer.first.compare("DecorationBack") || !layer.first.compare("DecorationFront"))
+#define IS_DECORATION(layer) (!layer.first.compare(0, 10, "Decoration"))
 #define IS_GROUND(layer) (!layer.first.compare("Ground"))
 #define IS_HIDDEN(layer) (layer.first.find("Hidden") != std::string::npos)
 
@@ -151,7 +151,7 @@ bool Stage::loadStage(string path, Texture tex){
 }
 
 void Stage::draw(){
-    for(const auto object: this->objects["DecorationBack"]){
+    for(const auto object: this->objects[0, 10, "DecorationBack"]){
         object->draw();
     }
     for(const auto layer: this->objects){
@@ -160,15 +160,15 @@ void Stage::draw(){
             object->draw();
         }
     }
-    for(const auto object: this->objects["DecorationFront"]){
+    for(const auto object: this->objects[0, 10, "DecorationFront"]){
+        object->draw();
+    }
+    for(const auto object: this->objects[0, 10, "DecorationFrontMirrorY"]){
         object->draw();
     }
 }
 
 void Stage::update(){
-    // for(const auto object: this->objects["DecorationBack"]){
-    //     object->update();
-    // }
     map<string, vector<unsigned int>> removeObjectIndex;
 
     for(const auto layer: this->objects){
@@ -200,11 +200,6 @@ void Stage::update(){
     }
 
     if(this->player && this->player->getPosition().y > (this->mapHeight)+(10*this->tileSize)) this->tryRespawn();
-
-
-    // for(const auto object: this->objects["DecorationFront"]){
-    //     object->update();
-    // }
 }
 
 bool Stage::tryRespawn(){
@@ -238,6 +233,8 @@ bool Stage::hasKey(){ return this->_hasKey; }
 
 
 void Stage::updateTexture(){
+    if(this->game->mapIndex >= this->game->mapList.size()) return;
+
     Texture texture = getAsset("tileset", this->game->mapList[this->game->mapIndex]);
     for(auto iter: this->objects){
         for(auto object: iter.second){
@@ -246,4 +243,5 @@ void Stage::updateTexture(){
             }
         }
     }
+    this->texture = texture;
 }

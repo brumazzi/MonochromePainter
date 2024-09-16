@@ -57,18 +57,24 @@ void DynamicGround::invertDirectionCollisionCallback(Object *self, Object *objec
 }
 
 void DynamicGround::objectMoveCollisionCallback(Object *self, Object *object, Vector2 normal){
+    string group = self->getGroup();
+
     if(object->isUsingPhysic()){
         Vector2 direction = ((DynamicGround *) self)->getDirectionMovement();
 
-        std::cout << direction.x << ' ' << direction.y << std::endl;
-
-        if(direction.x || direction.y){
+        // if(direction.x || direction.y){
             Vector2 position = object->getPosition();
 
             if(direction.x) position.x += 0.6*direction.x;
-            if(direction.y < 0) position.y += 0.6*direction.y;
+            if(direction.y < 0) position.y += 0.55*direction.y;
+
+            if(!group.compare(0, 11, "GroundMoveP")){
+                if(group.compare(11, 1, "L")) position.x += 1;
+                else position.x -= 1;
+            }
+
             object->setPosition(position.x, position.y);
-        }
+        // }
 
 
         // ((Player *)object)->applyForceX(0.3*direction.x);

@@ -95,7 +95,7 @@ void Player::monsterCollisionCallback(Object *self, Object *object, Vector2 norm
             if(IsKeyDown(KEY_X)) self->applyForceY(-2.0);
             else self->applyForceY(-1.0);
         }
-        else self->getStage()->tryRespawn();
+        else if(object->getGroup().find("Nodamage") == std::string::npos) self->getStage()->tryRespawn();
     }
 }
 

@@ -81,6 +81,7 @@ int main(int argc, char **argv){
     loadAsset("Animated", "PlayerWalk", "assets/player_walk.png");
     loadAsset("Animated", "PlayerJump", "assets/player_jump.png");
     loadAsset("Animated", "MonsterWalk", "assets/monster_walk.png");
+    loadAsset("Animated", "MonsterWalkNodamage", "assets/monster_walk.png");
     loadAsset("Animated", "MonsterWalkStop", "assets/monster_walk.png");
     loadAsset("Animated", "MonsterFly", "assets/monster_fly.png");
     loadAsset("Animated", "MonsterFlyStop", "assets/monster_fly.png");
@@ -91,7 +92,11 @@ int main(int argc, char **argv){
     loadAsset("Animated", "MonsterWalkDamageStop", "assets/monster_walk_damage.png");
 
     loadAsset("tileset", "default", "assets/map.png");
-    loadAsset("tileset", "MAP_GREEN", "assets/map_green.png");
+    loadAsset("tileset", "MAP_GREEN", "assets/map_75a743.png");
+    loadAsset("tileset", "MAP_RED", "assets/map_c34848.png");
+    loadAsset("tileset", "MAP_BLUE", "assets/map_3c5e8b.png");
+    loadAsset("tileset", "MAP_YELLO", "assets/map_eac550.png");
+    loadAsset("tileset", "MAP_BROWN", "assets/map_a26342.png");
     auto life = loadAsset("Static", "Life", "assets/life.png");
 
     Game *game = new Game();
@@ -109,12 +114,15 @@ int main(int argc, char **argv){
 
     std::sort(game->levelList.begin(), game->levelList.end());
 
+    game->mapIndex = 0;
     stage->loadStage(game->levelList[0], getAsset("tileset", game->mapList[game->mapIndex]));
 
     char score[16];
 
     Camera2D camera;
     camera.rotation = 0;
+    camera.offset = {0, 0};
+    camera.target = {0, 0};
 
     while(!WindowShouldClose()){
         camera.zoom = game->getCamera().zoom*0.5;

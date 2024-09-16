@@ -48,8 +48,8 @@ Object::~Object(){
 void Object::draw(){
     if(this->_isDestroyed) return;
 
-    if(!this->group.compare(0, 4, "Text")){
-        const char *text = getText(this->group);
+    if(!this->group.compare(0, 5, "Text:")){
+        const char *text = this->group.c_str()+5;
         int textSize = MeasureText(text, 6);
         DrawText(text, (this->position.x+8) - (textSize/2), this->position.y-16, 6, WHITE);
         return;
@@ -219,7 +219,7 @@ void Object::applyCollisionRoles(Object *object, Vector2 normal){
             this->position.y = bounds.y - this->size.y + offset.y;
             this->lastPosition.y = bounds.y - this->size.y + offset.y;
         }else if(normal.y == 1){
-            if(!object->getGroup().compare(0, 4, "Platform")){
+            if(object->getGroup().compare(0, 8, "Platform")){
                 this->position.y = (bounds.y + bounds.height - offset.y);
                 this->lastPosition.y = (bounds.y + bounds.height - offset.y);
                 this->directionForce.y *= -0.4;
@@ -227,12 +227,14 @@ void Object::applyCollisionRoles(Object *object, Vector2 normal){
         }
     }
 
-    if(normal.x == -1){
-        this->position.x = bounds.x - this->size.x + offset.x;
-        this->lastPosition.x = bounds.x - this->size.x + offset.x;
-    }else if(normal.x == 1){
-        this->position.x = (bounds.x + bounds.width - offset.x);
-        this->lastPosition.x = (bounds.x + bounds.width - offset.x);
+    if(object->getGroup().compare(0, 8, "Platform")){
+        if(normal.x == -1){
+            this->position.x = bounds.x - this->size.x + offset.x;
+            this->lastPosition.x = bounds.x - this->size.x + offset.x;
+        }else if(normal.x == 1){
+            this->position.x = (bounds.x + bounds.width - offset.x);
+            this->lastPosition.x = (bounds.x + bounds.width - offset.x);
+        }
     }
 }
 
