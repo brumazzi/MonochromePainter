@@ -15,6 +15,7 @@ class Monster: public NPC{
     Vector2 directionMovement;
 
     static void directionCollisionCallback(Object *self, Object *object, Vector2 normal);
+    static void playerCollisionCallback(Object *self, Object *object, Vector2 normal);
 };
 
 #endif

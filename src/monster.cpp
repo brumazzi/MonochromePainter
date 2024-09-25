@@ -1,4 +1,5 @@
 #include <monster.hpp>
+#include <stage.hpp>
 #include <iostream>
 
 Monster::Monster(): NPC(){
@@ -33,13 +34,31 @@ void Monster::setGroup(string group){
         this->directionMovement.x = 1;
     }else if(group.find("Fly") != string::npos || group.find("Spider") != string::npos){
         this->directionMovement.y = 1;
+    }else if(group.find("Ballon") != string::npos){
+        this->directionMovement.y = 1;
+        this->setMovementSpeed(0.0);
     }
 }
 
 void Monster::applyCollisionRoles(Object *object, Vector2 normal){
     Monster::directionCollisionCallback(this, object, normal);
+    Monster::playerCollisionCallback(this, object, normal);
 
     Object::applyCollisionRoles(object, normal);
+}
+
+void Monster::playerCollisionCallback(Object *self, Object *object, Vector2 normal){
+    string group = object->getGroup();
+    Monster *monster = (Monster *) self;
+    if(monster->getGroup().find("Ballon") != string::npos && !group.compare(0, 6, "Player")){
+        if(monster->getMovementSpeed() == 0.0){
+            monster->setMovementSpeed(0.5);
+            for(auto oMonster: self->getStage()->getObjects("Monster")){
+                Vector2 pos = oMonster->getOrigin();
+                oMonster->setPosition(pos.x, pos.y);
+            }
+        }
+    }
 }
 
 void Monster::directionCollisionCallback(Object *self, Object *object, Vector2 normal){

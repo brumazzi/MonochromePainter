@@ -251,3 +251,6 @@ void Object::setSolid(bool isSolid){ this->_isSolid = isSolid; }
 void Object::addCollisionCallback(void (callback)(Object *, Object *, Vector2)){
     this->collisionCallbacks.push_back(callback);
 }
+
+Vector2 Object::getOrigin() {return this->origin; }
+void Object::setOrigin(Vector2 origin){ this->origin = origin; }

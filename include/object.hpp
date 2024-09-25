@@ -42,6 +42,7 @@ class Object{
     Stage *getStage();
     string getGroup();
     Vector2 getLinearVelocity();
+    Vector2 getOrigin();
 
     void setDirection(float direction);
     void setLifeTime(float lifeTime);
@@ -55,6 +56,7 @@ class Object{
     void setTexturePosition(float x, float y);
     void setTextureScale(float x, float y);
     void setStage(Stage *game);
+    void setOrigin(Vector2 origin);
     virtual void setGroup(string group);
     void setCollisionBoundsOffset(Vector2 offset);
     void applyForceY(float force);
@@ -93,6 +95,7 @@ class Object{
     unsigned int animationFrame;
     unsigned int animationStep;
     unsigned int animationDelay;
+    Vector2 origin;
 
     Vector2 directionForce;
     Vector2 lastPosition;

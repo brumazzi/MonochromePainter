@@ -87,6 +87,8 @@ bool Stage::loadStage(string path, Texture tex){
                 object->usePhysic(true, 0);
                 if(layerName.find("Spider") == std::string::npos) object->setTexture(getAsset("Animated", layerName), 2);
                 else object->setTexture(getAsset("Animated", "Spider"), 1);
+
+                object->setOrigin((Vector2) {(float) bi.x, (float) bi.y});
             }else if(!layerName.compare(0, 4, "Item")){
                 object = new Item();
                 this->objects["Item"].push_back(object);
@@ -205,6 +207,13 @@ void Stage::update(){
 bool Stage::tryRespawn(){
     if(this->getGame()->getLife() > 0){
         this->player->setPosition(this->respawn.x, this->respawn.y);
+        for(auto monster: this->objects["Monster"]){
+            if(monster->getGroup().find("Ballon") != string::npos){
+                Vector2 pos = monster->getOrigin();
+                monster->setPosition(pos.x, pos.y);
+                ((Monster *)monster)->setMovementSpeed(0.0);
+            }
+        }
         this->game->subLife();
     }
     else this->game->gameOver();

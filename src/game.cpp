@@ -3,11 +3,16 @@
 #include <assets.h>
 
 const static unsigned char COLOR_LIST[][4] = {
+    {0xff, 0xff, 0xff, 0xff},
     {0x75, 0xa7, 0x43, 0xff},
     {0xc3, 0x48, 0x48, 0xff},
     {0x3c, 0x5e, 0x8b, 0xff},
     {0xea, 0xc5, 0x50, 0xff},
     {0xa2, 0x63, 0x42, 0xff},
+    {0xaa, 0x68, 0xde, 0xff},
+    {0x5a, 0xa9, 0xde, 0xff},
+    {0x7f, 0x98, 0xa5, 0xff},
+    {0xc6, 0x51, 0x97, 0xff},
 };
 
 Game::Game(){
@@ -29,6 +34,10 @@ Game::Game(){
     this->mapList.push_back("MAP_BLUE");
     this->mapList.push_back("MAP_YELLO");
     this->mapList.push_back("MAP_BROWN");
+    this->mapList.push_back("MAP_PURPLE");
+    this->mapList.push_back("MAP_CYAN");
+    this->mapList.push_back("MAP_GRAY");
+    this->mapList.push_back("MAP_PINK");
 }
 Game::~Game(){
     delete this->stage;
@@ -112,7 +121,6 @@ void Game::nextLevel(){
     this->toDark = true;
     this->isNextLevel = true;
 }
-
 
 void Game::setStage(Stage *stage){ this->stage = stage; }
 

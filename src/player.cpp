@@ -61,10 +61,13 @@ void Player::itemCollisionCallback(Object *self, Object *object, Vector2 normal)
                 ((Door *) self->getStage()->getObjects("DoorNext")[0])->open();
             }else if(!group.compare("ItemLife")){
                 self->getGame()->addLife();
+            }else if(!group.compare("ItemChest")){
+                self->getGame()->addScore(50);
             }else if(!group.compare("ItemPaint")){
                 self->getGame()->mapIndex++;
                 self->getStage()->updateTexture();
             }
+
             object->destroy();
         }
     }
@@ -92,10 +95,17 @@ void Player::windCollisionCallback(Object *self, Object *object, Vector2 normal)
 void Player::monsterCollisionCallback(Object *self, Object *object, Vector2 normal){
     if(!object->getGroup().compare(0, 7, "Monster")){
         if(normal.y == -1){
-            if(IsKeyDown(KEY_X)) self->applyForceY(-2.0);
+            if(IsKeyDown(KEY_X)){
+                if(object->getGroup().find("Ballon") != std::string::npos){
+                    Vector2 pos = object->getPosition();
+                    self->setPosition(pos.x, pos.y);
+                    self->applyForceY(-6.0);
+                }
+                else self->applyForceY(-2.5);
+            }
             else self->applyForceY(-1.0);
         }
-        else if(object->getGroup().find("Nodamage") == std::string::npos) self->getStage()->tryRespawn();
+        else if(object->getGroup().find("Nodamage") == std::string::npos && object->getGroup().find("Ballon") == std::string::npos) self->getStage()->tryRespawn();
     }
 }
 
