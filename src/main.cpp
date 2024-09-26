@@ -13,10 +13,47 @@
 #include <cstdio>
 #include <string.h>
 
+typedef struct _credits{
+    unsigned short fontSize;
+    const char *text;
+    Color color;
+} Credits;
+
+const Credits CREDITS[] = {
+    {64, "THANK YOU FOR PLAY", {0xea, 0xc5, 0x50, 0xff}},
+    {48, "\n", {0x00, 0x00, 0x00, 0x00}},
+    {48, "CREDITS", {0x75, 0xa7, 0x43, 0xff}},
+    {26, "\n", {0x00, 0x00, 0x00, 0x00}},
+    {36, "DEVELOPER", {0xd8, 0x7e, 0x47, 0xff}},
+    {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "BRUMAZZI DB", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
+    {36, "LEVEL DESIGNER", {0xd8, 0x7e, 0x47, 0xff}},
+    {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "BRUMAZZI DB", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "SOFIA NATÁLIA RITTER", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
+    {36, "GAME DESINER", {0xd8, 0x7e, 0x47, 0xff}},
+    {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "BRUMAZZI DB", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "KENNEY", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "SOFIA NATÁLIA RITTER", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
+    {36, "MUSIC DESIGNER", {0xd8, 0x7e, 0x47, 0xff}},
+    {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "BRUMAZZI DB", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
+    {0, 0, {0x00, 0x00, 0x00, 0x00}}
+};
+
 int main(int argc, char **argv){
     initTexts();
 
-    InitWindow(1280,720, "Monocrome Painter");
+    InitWindow(1280,720, "Monochrome Painter");
     SetTargetFPS(60);
 
     bool saveFile = false;
@@ -62,7 +99,23 @@ int main(int argc, char **argv){
         while(true){
             BeginDrawing();{
                 ClearBackground(BLACK);
-                DrawText("Credits Not Implemented", 1280/2-MeasureText("Credits Not Implemented", 64)/2, 720/2, 64, WHITE);
+                unsigned short i=0;
+
+                int y = 38;
+                while(CREDITS[i].fontSize){
+                    int x;
+                    if(CREDITS[i].fontSize == 18){
+                        x = GetScreenWidth()/2 - 200;
+                    }else{
+                        x = MeasureText(CREDITS[i].text, CREDITS[i].fontSize);
+                        x = (GetScreenWidth()/2) - (x/2);
+                    }
+                    DrawText(CREDITS[i].text, x, y, CREDITS[i].fontSize, CREDITS[i].color);
+                    y += CREDITS[i].fontSize;
+                    i++;
+                }
+
+                // DrawText("Credits Not Implemented", 1280/2-MeasureText("Credits Not Implemented", 64)/2, 720/2, 64, WHITE);
             }EndDrawing();
 
            if(IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_ENTER)){
@@ -103,6 +156,8 @@ int main(int argc, char **argv){
     loadAsset("tileset", "MAP_CYAN", "assets/map_5aa9de.png");
     loadAsset("tileset", "MAP_GRAY", "assets/map_7f98a5.png");
     loadAsset("tileset", "MAP_PINK", "assets/map_c65197.png");
+    loadAsset("tileset", "MAP_ORANGE", "assets/map_d87e47.png");
+
     auto life = loadAsset("Static", "Life", "assets/life.png");
 
     Game *game = new Game();
@@ -120,8 +175,8 @@ int main(int argc, char **argv){
 
     std::sort(game->levelList.begin(), game->levelList.end());
 
-    game->mapIndex = 9;
-    stage->loadStage(game->levelList[19], getAsset("tileset", game->mapList[game->mapIndex]));
+    game->mapIndex = 0;
+    stage->loadStage(game->levelList[0], getAsset("tileset", game->mapList[game->mapIndex]));
 
     char score[18];
 

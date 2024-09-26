@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.28)    # CMake version check
-project(MonocromePainter)             # Create project "MonocromePainter"
+project(MonochromePainter)             # Create project "MonochromePainter"
 set(CMAKE_CXX_STANDARD 17)              # Enable c++17 standard
 
 # Add main.cpp file of the project root directory as a source file
@@ -11,9 +11,9 @@ pkg_check_modules(OGRE REQUIRED IMPORTED_TARGET jsoncpp)
 link_libraries(m dl pthread raylib jsoncpp)
 
 # Add executable target with source files listed in SOURCE_FILES variable
-add_executable(MonocromePainter ${SOURCE_FILES})
-# target_link_libraries(MonocromePainter PUBLIC PkgConfig::OGRE OgreBullet)
+add_executable(MonochromePainter ${SOURCE_FILES})
+# target_link_libraries(MonochromePainter PUBLIC PkgConfig::OGRE OgreBullet)
 
-# add_custom_command(TARGET MonocromePainter POST_BUILD COMMAND /bin/sh build_stages.sh)
-# add_custom_command(TARGET MonocromePainter POST_BUILD COMMAND wine build.bat)
-# add_custom_command(TARGET MonocromePainter POST_BUILD COMMAND /bin/sh create_zip.sh)
+add_custom_command(TARGET MonochromePainter POST_BUILD COMMAND /bin/sh build_stages.sh)
+add_custom_command(TARGET MonochromePainter POST_BUILD COMMAND wine build.bat)
+add_custom_command(TARGET MonochromePainter POST_BUILD COMMAND /bin/sh create_zip.sh)

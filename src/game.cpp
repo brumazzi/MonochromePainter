@@ -13,6 +13,7 @@ const static unsigned char COLOR_LIST[][4] = {
     {0x5a, 0xa9, 0xde, 0xff},
     {0x7f, 0x98, 0xa5, 0xff},
     {0xc6, 0x51, 0x97, 0xff},
+    {0xd8, 0x7e, 0x47, 0xff}
 };
 
 Game::Game(){
@@ -38,6 +39,7 @@ Game::Game(){
     this->mapList.push_back("MAP_CYAN");
     this->mapList.push_back("MAP_GRAY");
     this->mapList.push_back("MAP_PINK");
+    this->mapList.push_back("MAP_ORANGE");
 }
 Game::~Game(){
     delete this->stage;

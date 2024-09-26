@@ -1,4 +1,4 @@
-# Monocrome Painter
+# Monochrome Painter
 
 ## Building
 
