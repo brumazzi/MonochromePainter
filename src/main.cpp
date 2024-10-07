@@ -12,6 +12,7 @@
 #include <dirent.h>
 #include <cstdio>
 #include <string.h>
+#include <steam.hpp>
 
 typedef struct _credits{
     unsigned short fontSize;
@@ -32,14 +33,14 @@ const Credits CREDITS[] = {
     {36, "LEVEL DESIGNER", {0xd8, 0x7e, 0x47, 0xff}},
     {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
     {18, "BRUMAZZI DB", {0xc6, 0x51, 0x97, 0xff}},
-    {18, "SOFIA NATÁLIA RITTER", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "SOFISOYA", {0xc6, 0x51, 0x97, 0xff}},
     {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
     {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
     {36, "GAME DESINER", {0xd8, 0x7e, 0x47, 0xff}},
     {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
     {18, "BRUMAZZI DB", {0xc6, 0x51, 0x97, 0xff}},
     {18, "KENNEY", {0xc6, 0x51, 0x97, 0xff}},
-    {18, "SOFIA NATÁLIA RITTER", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "SOFISOYA", {0xc6, 0x51, 0x97, 0xff}},
     {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
     {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
     {36, "MUSIC DESIGNER", {0xd8, 0x7e, 0x47, 0xff}},
@@ -51,12 +52,25 @@ const Credits CREDITS[] = {
 };
 
 int main(int argc, char **argv){
+    setInitialized(); // TODO: End Game if steam not initialized
+
     initTexts();
 
     InitWindow(1280,720, "Monochrome Painter");
     SetTargetFPS(60);
 
-    bool saveFile = false;
+    if(!isInitialized()){
+        while(!WindowShouldClose()){
+            BeginDrawing();
+            DrawText("STEAM not initialized!", 1280/2-(MeasureText("STEAM not initialized!", 64)/2), 720/2-32, 64, RED);
+            EndDrawing();
+        }
+
+        CloseWindow();
+        return 0;
+    }
+
+    bool saveFile = isGameSaved();
     float alpha = 0.0;
     short option = 0;
 
@@ -68,17 +82,34 @@ int main(int argc, char **argv){
             DrawText("Verify game files and try again!", 1280/2-(MeasureText("Verify game files and try again!", 64)/2), 720/2-32, 64, RED);
             EndDrawing();
         }
+        CloseWindow();
+        if(isInitialized()) SteamAPI_Shutdown();
 
         return 0;
     }
 
+    Game *game = new Game();
     Texture title = LoadTexture("assets/title.png");
+    Camera2D camera;
+    camera.rotation = 0;
+    camera.offset = {0, 0};
+    camera.target = {0, 0};
+
     menu:
     while(true){
+        if(IsKeyPressed(KEY_F11) || (IsKeyDown(KEY_LEFT_ALT) && IsKeyPressed(KEY_ENTER))){
+            ToggleFullscreen();
+        }
+
+        camera.zoom = GetScreenWidth()/1280;
+
         BeginDrawing();{
+            BeginMode2D(camera);
             ClearBackground(BLACK);
             DrawTexture(title, 0, 0, WHITE);
             showMenu(option, saveFile);
+            EndMode2D();
+            if(IsKeyDown(KEY_LEFT_ALT)) DrawText("Alt", 0, 0, 16, RED);
         }EndDrawing();
 
         if(IsKeyPressed(KEY_UP)){
@@ -87,42 +118,47 @@ int main(int argc, char **argv){
         }else if(IsKeyPressed(KEY_DOWN)){
             option = (option+1) % 4;
         }else if(IsKeyPressed(KEY_ESCAPE)){
+            if(isInitialized()) SteamAPI_Shutdown();
             return 0;
-        }else if(IsKeyPressed(KEY_ENTER)) break;
+        }else if(IsKeyPressed(KEY_ENTER) && !IsKeyDown(KEY_LEFT_ALT)){
+            if(!saveFile) option++;
 
-    }
+            if(option == MENU_EXIT) return 0;
+            else if(option == MENU_CREDITS){
+                while(true){
+                    BeginDrawing();{
+                        ClearBackground(BLACK);
+                        unsigned short i=0;
 
-    if(!saveFile) option++;
+                        int y = 38;
+                        while(CREDITS[i].fontSize){
+                            int x;
+                            if(CREDITS[i].fontSize == 18){
+                                x = GetScreenWidth()/2 - 200;
+                            }else{
+                                x = MeasureText(CREDITS[i].text, CREDITS[i].fontSize);
+                                x = (GetScreenWidth()/2) - (x/2);
+                            }
+                            DrawText(CREDITS[i].text, x, y, CREDITS[i].fontSize, CREDITS[i].color);
+                            y += CREDITS[i].fontSize;
+                            i++;
+                        }
+                    }EndDrawing();
 
-    if(option == MENU_EXIT) return 0;
-    if(option == MENU_CREDITS){
-        while(true){
-            BeginDrawing();{
-                ClearBackground(BLACK);
-                unsigned short i=0;
-
-                int y = 38;
-                while(CREDITS[i].fontSize){
-                    int x;
-                    if(CREDITS[i].fontSize == 18){
-                        x = GetScreenWidth()/2 - 200;
-                    }else{
-                        x = MeasureText(CREDITS[i].text, CREDITS[i].fontSize);
-                        x = (GetScreenWidth()/2) - (x/2);
+                    if(IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_ENTER)){
+                        option--;
+                        break;
                     }
-                    DrawText(CREDITS[i].text, x, y, CREDITS[i].fontSize, CREDITS[i].color);
-                    y += CREDITS[i].fontSize;
-                    i++;
+
                 }
-
-                // DrawText("Credits Not Implemented", 1280/2-MeasureText("Credits Not Implemented", 64)/2, 720/2, 64, WHITE);
-            }EndDrawing();
-
-           if(IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_ENTER)){
-                option--;
-                goto menu;
+            }else if(option == MENU_RESET){
+                resetStats();
+            }else if(option == MENU_CONTINUE){
+                gameLoad(game);
+                break;
+            }else if(option == MENU_NEW_GAME){
+                break;
             }
-
         }
     }
 
@@ -160,7 +196,6 @@ int main(int argc, char **argv){
 
     auto life = loadAsset("Static", "Life", "assets/life.png");
 
-    Game *game = new Game();
     Stage *stage = new Stage(game);
 
     struct dirent *de;
@@ -175,21 +210,18 @@ int main(int argc, char **argv){
 
     std::sort(game->levelList.begin(), game->levelList.end());
 
-    game->mapIndex = 0;
-    stage->loadStage(game->levelList[0], getAsset("tileset", game->mapList[game->mapIndex]));
+    // game->mapIndex = 0;
+    stage->loadStage(game->levelList[game->levelIndex], getAsset("tileset", game->mapList[game->mapIndex]));
 
     char score[18];
 
-    Camera2D camera;
-    camera.rotation = 0;
-    camera.offset = {0, 0};
-    camera.target = {0, 0};
-
     while(!WindowShouldClose()){
+        if(IsKeyPressed(KEY_F11) || (IsKeyDown(KEY_LEFT_ALT) && IsKeyPressed(KEY_ENTER))){
+            ToggleFullscreen();
+        }
         camera.zoom = game->getCamera().zoom*0.5;
-        game->update();
+        if(!game->isGameOver()) game->update();
 
-        if(!game->isGameOver())
         sprintf(score, "Score: %ld", game->getScore());
         BeginDrawing();{
             ClearBackground(BLACK);
@@ -203,11 +235,16 @@ int main(int argc, char **argv){
                 DrawText(score, 16, 16, 16, WHITE);
             }EndMode2D();
         }EndDrawing();
+
+        if(game->isGameOver()){
+            // DrawRectangle
+        }
     }
 
     delete game;
 
     CloseWindow();
+    if(isInitialized()) SteamAPI_Shutdown();
 
     return 0;
 }

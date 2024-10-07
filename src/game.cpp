@@ -1,6 +1,7 @@
 #include <game.hpp>
 #include <iostream>
 #include <assets.h>
+#include <steam.hpp>
 
 const static unsigned char COLOR_LIST[][4] = {
     {0xff, 0xff, 0xff, 0xff},
@@ -22,7 +23,7 @@ Game::Game(){
     this->camera.rotation = 0;
     this->camera.zoom = GetScreenWidth()/CAMERA_WIDTH;
     this->score = 0;
-    this->life = 10;
+    this->life = 3;
     this->_gameOver = false;
     this->levelIndex = 0;
     this->toDark = false;
@@ -40,6 +41,7 @@ Game::Game(){
     this->mapList.push_back("MAP_GRAY");
     this->mapList.push_back("MAP_PINK");
     this->mapList.push_back("MAP_ORANGE");
+    this->saveMsgTimeout = 0;
 }
 Game::~Game(){
     delete this->stage;
@@ -50,9 +52,11 @@ void Game::draw(){
         if(this->stage) this->stage->draw();
     }EndMode2D();
     DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), (Color) {0,0,0, (unsigned char) this->displayAlpha});
+    if(this->saveMsgTimeout) DrawText("Saved!", 12, GetScreenHeight()-24, 12, RED);
 }
 
 void Game::update(){
+    if(this->saveMsgTimeout > 0) this->saveMsgTimeout--;
     if(this->mapIndex >= this->mapList.size()) this->mapIndex = (this->mapList.size())-1;
     // if(!this->stage){
     //     this->stage = new Stage(this);
@@ -122,6 +126,7 @@ void Game::update(){
 void Game::nextLevel(){
     this->toDark = true;
     this->isNextLevel = true;
+    if(saveGame(this)) this->saveMsgTimeout = 60*3;
 }
 
 void Game::setStage(Stage *stage){ this->stage = stage; }
@@ -136,9 +141,32 @@ short Game::getLife(){ return this->life; }
 Camera2D Game::getCamera(){ return this->camera; }
 
 void Game::addScore(long int point){ this->score += point; }
-void Game::addLife(){ this->life++; }
+void Game::addLife(){ this->life++; this->lifeCollected++; }
 void Game::subLife(){ this->life--; }
 
 bool Game::isGameOver(){ return this->_gameOver; }
 void Game::gameOver(){ this->_gameOver = true; }
 void Game::gameStart(){ this->_gameOver = false; }
+
+void Game::restartLevel(){
+    gameLoad(this);
+    this->_gameOver = false;
+    delete this->stage;
+    this->stage = new Stage(this);
+    this->stage->loadStage(this->levelList[this->levelIndex], getAsset("tileset", this->mapList[this->mapIndex]));
+}
+void Game::eventEndGame(){
+}
+
+void Game::takeConquist(string conquist){
+    string name = "P_" + conquist.erase(0, 13);
+
+    unlockAchieviment(name.c_str());
+}
+
+void Game::setScore(long int score){
+    this->score = score;
+}
+void Game::setLife(long int life){
+    this->life = life;
+}

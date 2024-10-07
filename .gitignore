@@ -15,3 +15,5 @@ CMakeFiles
 *.o
 *.zip
 *.bat
+*.lib
+lib64

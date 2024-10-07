@@ -12,6 +12,7 @@
 #define GRAVITY 9.8
 #define IS_DECORATION(layer) (!layer.first.compare(0, 10, "Decoration"))
 #define IS_GROUND(layer) (!layer.first.compare("Ground"))
+#define IS_CONQUIST(layer) (!layer.first.compare(0, 12, "ItemConquist"))
 #define IS_HIDDEN(layer) (layer.first.find("Hidden") != std::string::npos)
 
 
@@ -99,8 +100,10 @@ bool Stage::loadStage(string path, Texture tex){
                 object = new NPC();
                 object->usePhysic(true, GRAVITY);
                 this->objects["NPC"].push_back(object);
-                object->setTexture(getAsset("Animated", layerName), 1);
-                object->setAnimated(true);
+                object->setTexture(tex, 1);
+                object->setAnimated(false);
+                object->setFrameCount(1);
+                object->setTextureOffset(offsetX, offsetY);
             }else if(!layerName.compare(0, 10, "GroundMove")){
                 object = new DynamicGround();
                 object->setTextureOffset(offsetX, offsetY);
@@ -157,7 +160,7 @@ void Stage::draw(){
         object->draw();
     }
     for(const auto layer: this->objects){
-        if(IS_DECORATION(layer) || IS_HIDDEN(layer)) continue;
+        if(IS_DECORATION(layer) || IS_HIDDEN(layer) || IS_CONQUIST(layer)) continue;
         for(const auto object: layer.second){
             object->draw();
         }

@@ -28,10 +28,14 @@ class Game{
     void subLife();
     void nextLevel();
     bool isGameOver();
+    void setScore(long int score);
+    void setLife(long int life);
 
     short getLife();
     void gameOver();
     void gameStart();
+    void eventEndGame();
+    void restartLevel();
     Player *getPlayer();
     long int getScore();
     Stage *getStage();
@@ -39,8 +43,13 @@ class Game{
     vector<string> levelList;
     vector<string> mapList;
     unsigned int mapIndex;
+    short lifeCollected;
+
+    void takeConquist(string conquist);
+    unsigned int levelIndex;
 
     private:
+    unsigned int saveMsgTimeout;
     Camera2D camera;
     Stage * stage;
     long int score;
@@ -50,7 +59,6 @@ class Game{
     short displayAlpha;
     bool toDark;
     bool isNextLevel;
-    unsigned int levelIndex;
 };
 
 #endif

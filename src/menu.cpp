@@ -5,25 +5,26 @@ static const char *OPTIONS[] = {
     "Continue",
     "New Game",
     "Credits",
-    "Exit"
+    "Exit",
+    "Reset Stats",
 };
 
 static const char *OPTIONS2[] = {
     "New Game",
     "Credits",
-    "Exit"
+    "Exit",
+    "Reset Stats",
 };
 
 void showMenu(short option, bool hasSaveFile){
-    int width = GetScreenWidth(),
-        height = GetScreenHeight();
+    int width = 1280,
+        height = 720;
 
     float position = height/2 + 128;
     Font font = GetFontDefault();
     const char **options = hasSaveFile ? OPTIONS : OPTIONS2;
 
-    for(int i = 0; i<4; i++){
-        if(hasSaveFile && i == 0) continue;
+    for(int i = 0; i<(hasSaveFile ? 5 : 4); i++){
         bool selected = (i == option);
         float fontSize = selected ? 62 : 24;
 

@@ -66,6 +66,8 @@ void Player::itemCollisionCallback(Object *self, Object *object, Vector2 normal)
             }else if(!group.compare("ItemPaint")){
                 self->getGame()->mapIndex++;
                 self->getStage()->updateTexture();
+            }else if(!group.compare(0, 12,"ItemConquist")){
+                self->getGame()->takeConquist(group);
             }
 
             object->destroy();
