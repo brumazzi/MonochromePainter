@@ -56,7 +56,8 @@ int main(int argc, char **argv){
 
     initTexts();
 
-    InitWindow(1280,720, "Monochrome Painter");
+    InitWindow(1280, 720, "Monochrome Painter");
+    SetWindowIcon(LoadImage("assets/paint_bucket.png"));
     SetTargetFPS(60);
 
     if(!isInitialized()){
@@ -116,7 +117,7 @@ int main(int argc, char **argv){
             option--;
             if(option < 0) option = 3;
         }else if(IsKeyPressed(KEY_DOWN)){
-            option = (option+1) % 4;
+            option = (option+1) % 5;
         }else if(IsKeyPressed(KEY_ESCAPE)){
             if(isInitialized()) SteamAPI_Shutdown();
             return 0;
@@ -157,6 +158,8 @@ int main(int argc, char **argv){
                 gameLoad(game);
                 break;
             }else if(option == MENU_NEW_GAME){
+                game->mapIndex = (checkAchieviment("P_BEATFULL_WORLD") ? 10 : 0);
+                saveGame(game);
                 break;
             }
         }
@@ -215,12 +218,15 @@ int main(int argc, char **argv){
 
     char score[18];
 
-    while(!WindowShouldClose()){
+    int gameoverOption = 0;
+    bool menu = false;
+    // bool endGame = false;
+    while(true){
         if(IsKeyPressed(KEY_F11) || (IsKeyDown(KEY_LEFT_ALT) && IsKeyPressed(KEY_ENTER))){
             ToggleFullscreen();
         }
         camera.zoom = game->getCamera().zoom*0.5;
-        if(!game->isGameOver()) game->update();
+        if(!game->isGameOver() && !menu) game->update();
 
         sprintf(score, "Score: %ld", game->getScore());
         BeginDrawing();{
@@ -234,17 +240,53 @@ int main(int argc, char **argv){
                 }
                 DrawText(score, 16, 16, 16, WHITE);
             }EndMode2D();
+
+            if(game->isGameOver() || menu){
+                DrawRectangle(0, 0, 1280, 720, (Color) {0,0,0, 180});
+                showMenuGameover(gameoverOption);
+
+                if(IsKeyPressed(KEY_UP)){
+                    gameoverOption--;
+                    if(gameoverOption < 0) gameoverOption = 2;
+                }else if(IsKeyPressed(KEY_DOWN)){
+                    gameoverOption = (gameoverOption+1) % 3;
+                }else if(IsKeyPressed(KEY_ENTER)){
+                    switch (gameoverOption){
+                    case 0:
+                        game->restartLevel(true);
+                        break;
+                    case 1:
+                        game->levelIndex = 0;
+                        game->setScore(0);
+                        game->setLife(5);
+                        game->lifeCollected = 0;
+                        game->mapIndex = (checkAchieviment("P_BEATFULL_WORLD") ? 10 : 0);
+                        game->restartLevel(false);
+                        break;
+                    case 2:
+                        CloseWindow();
+                        if(isInitialized()) SteamAPI_Shutdown();
+                        return 0;
+                    }
+                    menu = false;
+                    game->gameStart();
+                    gameoverOption = 0;
+                }
+
+            }
         }EndDrawing();
 
-        if(game->isGameOver()){
-            // DrawRectangle
+        if(IsKeyPressed(KEY_ESCAPE) || WindowShouldClose()){
+            menu = !menu;
+            gameoverOption = 0;
         }
+
     }
 
     delete game;
 
-    CloseWindow();
     if(isInitialized()) SteamAPI_Shutdown();
+    CloseWindow();
 
     return 0;
 }

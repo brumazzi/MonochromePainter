@@ -33,6 +33,18 @@ bool unlockAchieviment(const char *achievimentID){
     return false;
 }
 
+bool checkAchieviment(const char *achievimentID){
+    if(!initialized) return false;
+
+    bool unlock = false;
+    auto userStats = SteamUserStats();
+    if(userStats && userStats->RequestCurrentStats()){
+        userStats->GetAchievement(achievimentID, &unlock);
+    }
+
+    return unlock;
+}
+
 void resetStats(){
     if(!initialized) return;
 
@@ -67,6 +79,7 @@ bool gameLoad(Game *game){
         SteamRemoteStorage()->FileRead(SAVE_FILE_NAME, (void *) savedData, MAX_SAVED_DATA_SIZE);
         int score, lifes;
         sscanf(savedData, "%d %d %d %d %hd", &game->levelIndex, &score, &lifes, &game->mapIndex, &game->lifeCollected);
+        if(checkAchieviment("P_BEATFULL_WORLD")) game->mapIndex = 10;
         game->setScore(score);
         game->setLife(lifes);
     }

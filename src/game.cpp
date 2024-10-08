@@ -23,7 +23,7 @@ Game::Game(){
     this->camera.rotation = 0;
     this->camera.zoom = GetScreenWidth()/CAMERA_WIDTH;
     this->score = 0;
-    this->life = 3;
+    this->life = 5;
     this->_gameOver = false;
     this->levelIndex = 0;
     this->toDark = false;
@@ -148,8 +148,10 @@ bool Game::isGameOver(){ return this->_gameOver; }
 void Game::gameOver(){ this->_gameOver = true; }
 void Game::gameStart(){ this->_gameOver = false; }
 
-void Game::restartLevel(){
-    gameLoad(this);
+void Game::restartLevel(bool load){
+    int level = this->levelIndex;
+    if(load) gameLoad(this);
+    this->levelIndex = level;
     this->_gameOver = false;
     delete this->stage;
     this->stage = new Stage(this);

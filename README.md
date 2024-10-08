@@ -6,3 +6,4 @@
 
 * jsoncpp
 * raylib
+* steamworks

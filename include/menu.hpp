@@ -10,5 +10,6 @@
 #define MENU_RESET    4
 
 void showMenu(short option, bool hasSaveFile);
+void showMenuGameover(short option);
 
 #endif

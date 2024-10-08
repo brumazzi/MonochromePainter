@@ -35,7 +35,7 @@ class Game{
     void gameOver();
     void gameStart();
     void eventEndGame();
-    void restartLevel();
+    void restartLevel(bool game);
     Player *getPlayer();
     long int getScore();
     Stage *getStage();

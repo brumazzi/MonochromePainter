@@ -16,6 +16,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -Wl,-rpath=./lib64")
 add_executable(MonochromePainter ${SOURCE_FILES})
 # target_link_libraries(MonochromePainter PUBLIC PkgConfig::OGRE OgreBullet)
 
-add_custom_command(TARGET MonochromePainter POST_BUILD COMMAND /bin/sh build_stages.sh)
+# add_custom_command(TARGET MonochromePainter POST_BUILD COMMAND /bin/sh build_stages.sh)
 # add_custom_command(TARGET MonochromePainter POST_BUILD COMMAND wine build.bat)
 # add_custom_command(TARGET MonochromePainter POST_BUILD COMMAND /bin/sh create_zip.sh)

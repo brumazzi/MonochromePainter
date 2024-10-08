@@ -13,6 +13,7 @@ class Game;
 #define MAX_SAVED_DATA_SIZE 128
 
 bool unlockAchieviment(const char *achievimentID);
+bool checkAchieviment(const char *achievimentID);
 void resetStats();
 void setInitialized();
 bool isInitialized();
