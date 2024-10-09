@@ -47,6 +47,7 @@ class Game{
 
     void takeConquist(string conquist);
     unsigned int levelIndex;
+    vector<Sound> musics;
 
     private:
     unsigned int saveMsgTimeout;

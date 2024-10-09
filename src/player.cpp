@@ -30,7 +30,7 @@ bool Player::update(){
         this->setTexture(getAsset("Animated", "PlayerJump"), 1);
     }
 
-    if(IsKeyDown(KEY_X)) this->jump();
+    if(IsKeyDown(KEY_X) || IsKeyDown(KEY_SPACE)) this->jump();
     return NPC::update();
 }
 

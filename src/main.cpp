@@ -57,6 +57,7 @@ int main(int argc, char **argv){
     initTexts();
 
     InitWindow(1280, 720, "Monochrome Painter");
+    InitAudioDevice();
     SetWindowIcon(LoadImage("assets/paint_bucket.png"));
     SetTargetFPS(60);
 
@@ -70,6 +71,7 @@ int main(int argc, char **argv){
         CloseWindow();
         return 0;
     }
+
 
     bool saveFile = isGameSaved();
     float alpha = 0.0;
@@ -95,6 +97,10 @@ int main(int argc, char **argv){
     camera.rotation = 0;
     camera.offset = {0, 0};
     camera.target = {0, 0};
+
+    Sound intro = LoadSound("musics/title.ogg");
+    SetSoundVolume(intro, 0.8);
+    PlaySound(intro);
 
     menu:
     while(true){
@@ -164,6 +170,7 @@ int main(int argc, char **argv){
             }
         }
     }
+    StopSound(intro);
 
     loadAsset("Static", "DoorClose", "assets/door_close.png");
     loadAsset("Static", "DoorOpen", "assets/door_open.png");
@@ -214,6 +221,7 @@ int main(int argc, char **argv){
     std::sort(game->levelList.begin(), game->levelList.end());
 
     // game->mapIndex = 0;
+    // game->levelIndex = 21;
     stage->loadStage(game->levelList[game->levelIndex], getAsset("tileset", game->mapList[game->mapIndex]));
 
     char score[18];

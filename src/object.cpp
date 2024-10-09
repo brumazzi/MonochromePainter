@@ -2,6 +2,7 @@
 #include <game.hpp>
 #include <stage.hpp>
 #include <iostream>
+#include <steam.hpp>
 
 static map<string, const char*> textList;
 void initTexts(){
@@ -117,6 +118,13 @@ bool Object::update(){
     };
 
     if(this->getLinearVelocity().y != 0) this->_isGrounded = false;
+
+    if(!group.compare("Call:END_GAME")){
+        if(this->getStage() && this->getGame()){
+            this->getGame()->eventEndGame();
+            this->destroy();
+        }
+    }
 
     return true;
 }

@@ -42,6 +42,8 @@ Game::Game(){
     this->mapList.push_back("MAP_PINK");
     this->mapList.push_back("MAP_ORANGE");
     this->saveMsgTimeout = 0;
+
+    // this->musics.push_back(LoadSound(""));
 }
 Game::~Game(){
     delete this->stage;
@@ -158,6 +160,15 @@ void Game::restartLevel(bool load){
     this->stage->loadStage(this->levelList[this->levelIndex], getAsset("tileset", this->mapList[this->mapIndex]));
 }
 void Game::eventEndGame(){
+    if(this->getScore() == 0) unlockAchieviment("P_ZERO_POINTS");
+    if(this->lifeCollected == 0) unlockAchieviment("P_ZERO_LIVE");
+    if(this->mapIndex == 0) unlockAchieviment("P_ZERO_PAINT");
+
+    if(this->getScore() >= 196) unlockAchieviment("P_PERFECT_POINT");
+    if(this->lifeCollected >= 28) unlockAchieviment("P_FULL_LIVE");
+    if(this->mapIndex == (this->mapList.size())-1) unlockAchieviment("P_BEATFULL_WORLD");
+
+    unlockAchieviment("P_GAME_OVER");
 }
 
 void Game::takeConquist(string conquist){

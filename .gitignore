@@ -49,3 +49,5 @@ lib64
 *.exe
 *.out
 *.app
+
+*.py
