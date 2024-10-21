@@ -44,10 +44,13 @@ class Game{
     vector<string> mapList;
     unsigned int mapIndex;
     short lifeCollected;
+    Music birds;
+
+    void createRenderArea(Vector2 dimension);
 
     void takeConquist(string conquist);
     unsigned int levelIndex;
-    vector<Sound> musics;
+    vector<Sound> sounds;
 
     private:
     unsigned int saveMsgTimeout;
@@ -60,6 +63,8 @@ class Game{
     short displayAlpha;
     bool toDark;
     bool isNextLevel;
+    unsigned short soundIndex;
+    RenderTexture2D render;
 };
 
 #endif

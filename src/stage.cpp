@@ -65,8 +65,16 @@ bool Stage::loadStage(string path, Texture tex){
     this->textureWidth = tex.width/this->tileSize;
     this->textureHeight = tex.height/this->tileSize;
 
+    if(this->game) this->game->createRenderArea((Vector2) {(float) this->mapWidth, (float) this->mapHeight});
+
     for(const auto layer: root["layers"]){
         auto layerName = layer["name"].asString();
+
+        if(this->game){
+            if(!layerName.compare("Birds")) PlayMusicStream(this->game->birds);
+            else if(!layerName.compare("NoBirds")) StopMusicStream(this->game->birds);
+        }
+
         for(const auto tile: layer["tiles"]){
             if(!layerName.compare("None") || !layerName.compare("BoxInfo")) continue;
             BlockInfo bi = {
@@ -145,7 +153,6 @@ bool Stage::loadStage(string path, Texture tex){
             object->setSolid(bi.solid);
             object->setGroup(layerName);
             object->setStage(this);
-
         }
     }
     this->_isLoaded = true;

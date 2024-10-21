@@ -43,16 +43,43 @@ Game::Game(){
     this->mapList.push_back("MAP_ORANGE");
     this->saveMsgTimeout = 0;
 
-    // this->musics.push_back(LoadSound(""));
+    this->sounds.push_back(LoadSound("sounds/music_01.mp3"));
+    this->sounds.push_back(LoadSound("sounds/music_02.mp3"));
+    this->sounds.push_back(LoadSound("sounds/music_03.mp3"));
+    this->sounds.push_back(LoadSound("sounds/music_04.mp3"));
+    this->sounds.push_back(LoadSound("sounds/music_05.mp3"));
+
+    this->birds = LoadMusicStream("sounds/birds.mp3");
+    this->birds.looping = true;
+    SetMusicVolume(this->birds, 0.6);
+
+    for(auto sound: this->sounds){
+        SetSoundVolume(sound, 0.15);
+    }
+
+    this->soundIndex = 0;
 }
 Game::~Game(){
     delete this->stage;
 }
 
+void Game::createRenderArea(Vector2 dimension){
+    if(this->render.id != 0) UnloadRenderTexture(this->render);
+    this->render = LoadRenderTexture(dimension.x, dimension.y);
+}
+
 void Game::draw(){
-    BeginMode2D(this->camera);{
+    if(!this->stage || this->render.id == 0) return;
+
+    BeginTextureMode(this->render);{
+        ClearBackground(BLACK);
         if(this->stage) this->stage->draw();
+    }EndTextureMode();
+
+    BeginMode2D(this->camera);{
+        DrawTextureRec(this->render.texture, (Rectangle) {0, 0, (float) this->render.texture.width, (float) -this->render.texture.height}, (Vector2) {0, 0}, WHITE);
     }EndMode2D();
+
     DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), (Color) {0,0,0, (unsigned char) this->displayAlpha});
     if(this->saveMsgTimeout) DrawText("Saved!", 12, GetScreenHeight()-24, 12, RED);
 }
@@ -64,6 +91,14 @@ void Game::update(){
     //     this->stage = new Stage(this);
     //     this->stage->loadStage(this->levelList[this->levelIndex], getAsset("tileset", "default"));
     // }
+
+    int prevSound = this->soundIndex ? this->soundIndex - 1 : this->sounds.size() - 1;
+    if(!IsSoundPlaying(this->sounds[prevSound])){
+        PlaySound(this->sounds[this->soundIndex]);
+        this->soundIndex = (this->soundIndex + 1)%this->sounds.size();
+    }
+
+    UpdateMusicStream(this->birds);
 
     if(this->toDark){
         if(this->displayAlpha == 255){

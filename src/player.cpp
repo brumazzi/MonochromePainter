@@ -14,11 +14,20 @@ Player::Player(): NPC(){
 }
 
 bool Player::update(){
+    int defaultGamePad = 0;
+    bool joysticAvaliable = IsGamepadAvailable(defaultGamePad);
+    float axisX = 0.0;
+    bool jumpButtom = false;
 
-    if(IsKeyDown(KEY_LEFT)){
+    if(joysticAvaliable){
+        axisX = GetGamepadAxisMovement(defaultGamePad, GAMEPAD_AXIS_LEFT_X);
+        jumpButtom = IsGamepadButtonDown(defaultGamePad, GAMEPAD_BUTTON_RIGHT_FACE_DOWN);
+    }
+
+    if(IsKeyDown(KEY_LEFT) || (axisX < 0)){
         this->applyForceX(-1);
         this->setTexture(getAsset("Animated", "PlayerWalk"), 4);
-    }else if(IsKeyDown(KEY_RIGHT)){
+    }else if(IsKeyDown(KEY_RIGHT) || (axisX > 0)){
         this->applyForceX(1);
         this->setTexture(getAsset("Animated", "PlayerWalk"), 4);
     }else{
@@ -30,7 +39,8 @@ bool Player::update(){
         this->setTexture(getAsset("Animated", "PlayerJump"), 1);
     }
 
-    if(IsKeyDown(KEY_X) || IsKeyDown(KEY_SPACE)) this->jump();
+    if(IsKeyDown(KEY_X) || IsKeyDown(KEY_SPACE) || jumpButtom) this->jump();
+
     return NPC::update();
 }
 
@@ -97,10 +107,11 @@ void Player::windCollisionCallback(Object *self, Object *object, Vector2 normal)
 void Player::monsterCollisionCallback(Object *self, Object *object, Vector2 normal){
     if(!object->getGroup().compare(0, 7, "Monster")){
         if(normal.y == -1){
-            if(IsKeyDown(KEY_X)){
+            if(IsKeyDown(KEY_X) || (IsGamepadAvailable(0) && IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN))){
                 if(object->getGroup().find("Ballon") != std::string::npos){
                     Vector2 pos = object->getPosition();
-                    self->setPosition(pos.x, pos.y);
+                    Vector2 selfPos = self->getPosition();
+                    self->setPosition(selfPos.x, pos.y-16);
                     self->applyForceY(-6.0);
                 }
                 else self->applyForceY(-2.5);

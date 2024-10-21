@@ -14,6 +14,10 @@
 #include <string.h>
 #include <steam.hpp>
 
+#define XBOX360_LEGACY_NAME_ID  "Xbox Controller"
+#define XBOX360_NAME_ID         "Xbox 360 Controller"
+#define PS3_NAME_ID             "Sony PLAYSTATION(R)3 Controller"
+
 typedef struct _credits{
     unsigned short fontSize;
     const char *text;
@@ -52,6 +56,8 @@ const Credits CREDITS[] = {
 };
 
 int main(int argc, char **argv){
+    SetConfigFlags(FLAG_MSAA_4X_HINT);
+    int gamepad = 0;
     setInitialized(); // TODO: End Game if steam not initialized
 
     initTexts();
@@ -64,6 +70,7 @@ int main(int argc, char **argv){
     if(!isInitialized()){
         while(!WindowShouldClose()){
             BeginDrawing();
+            ClearBackground(BLACK);
             DrawText("STEAM not initialized!", 1280/2-(MeasureText("STEAM not initialized!", 64)/2), 720/2-32, 64, RED);
             EndDrawing();
         }
@@ -71,7 +78,6 @@ int main(int argc, char **argv){
         CloseWindow();
         return 0;
     }
-
 
     bool saveFile = isGameSaved();
     float alpha = 0.0;
@@ -98,9 +104,12 @@ int main(int argc, char **argv){
     camera.offset = {0, 0};
     camera.target = {0, 0};
 
-    Sound intro = LoadSound("musics/title.ogg");
-    SetSoundVolume(intro, 0.8);
+    Sound intro = LoadSound("sounds/title.mp3");
+    SetSoundVolume(intro, 0.5);
     PlaySound(intro);
+    float axisY = 0;
+    bool axisPressed = false;
+    bool confirmButton = false;
 
     menu:
     while(true){
@@ -119,15 +128,23 @@ int main(int argc, char **argv){
             if(IsKeyDown(KEY_LEFT_ALT)) DrawText("Alt", 0, 0, 16, RED);
         }EndDrawing();
 
-        if(IsKeyPressed(KEY_UP)){
+        if(IsGamepadAvailable(gamepad)){
+            if(!axisPressed) axisY = GetGamepadAxisMovement(gamepad, GAMEPAD_AXIS_LEFT_Y);
+            if(axisPressed) axisY = 0.0;
+            if(axisY != 0) axisPressed = true;
+            confirmButton = IsGamepadButtonPressed(gamepad, GAMEPAD_BUTTON_RIGHT_FACE_DOWN);
+            if(GetGamepadAxisMovement(gamepad, GAMEPAD_AXIS_LEFT_Y) == 0) axisPressed = false;
+        }
+
+        if(IsKeyPressed(KEY_UP) || axisY < 0){
             option--;
             if(option < 0) option = 3;
-        }else if(IsKeyPressed(KEY_DOWN)){
+        }else if(IsKeyPressed(KEY_DOWN) || axisY > 0){
             option = (option+1) % 5;
         }else if(IsKeyPressed(KEY_ESCAPE)){
             if(isInitialized()) SteamAPI_Shutdown();
             return 0;
-        }else if(IsKeyPressed(KEY_ENTER) && !IsKeyDown(KEY_LEFT_ALT)){
+        }else if((IsKeyPressed(KEY_ENTER) && !IsKeyDown(KEY_LEFT_ALT)) || confirmButton){
             if(!saveFile) option++;
 
             if(option == MENU_EXIT) return 0;
@@ -221,19 +238,28 @@ int main(int argc, char **argv){
     std::sort(game->levelList.begin(), game->levelList.end());
 
     // game->mapIndex = 0;
-    // game->levelIndex = 21;
+    // game->levelIndex = 24;
     stage->loadStage(game->levelList[game->levelIndex], getAsset("tileset", game->mapList[game->mapIndex]));
 
     char score[18];
 
     int gameoverOption = 0;
     bool menu = false;
-    // bool endGame = false;
+    bool menuButton = false;
     while(true){
         if(IsKeyPressed(KEY_F11) || (IsKeyDown(KEY_LEFT_ALT) && IsKeyPressed(KEY_ENTER))){
             ToggleFullscreen();
         }
         camera.zoom = game->getCamera().zoom*0.5;
+        if(IsGamepadAvailable(gamepad)){
+            if(!axisPressed) axisY = GetGamepadAxisMovement(gamepad, GAMEPAD_AXIS_LEFT_Y);
+            if(axisPressed) axisY = 0.0;
+            if(axisY != 0) axisPressed = true;
+            confirmButton = IsGamepadButtonPressed(gamepad, GAMEPAD_BUTTON_RIGHT_FACE_DOWN);
+            if(GetGamepadAxisMovement(gamepad, GAMEPAD_AXIS_LEFT_Y) == 0) axisPressed = false;
+            menuButton = IsGamepadButtonPressed(gamepad, GAMEPAD_BUTTON_MIDDLE_RIGHT);
+        }
+
         if(!game->isGameOver() && !menu) game->update();
 
         sprintf(score, "Score: %ld", game->getScore());
@@ -253,12 +279,12 @@ int main(int argc, char **argv){
                 DrawRectangle(0, 0, 1280, 720, (Color) {0,0,0, 180});
                 showMenuGameover(gameoverOption);
 
-                if(IsKeyPressed(KEY_UP)){
+                if(IsKeyPressed(KEY_UP) || axisY < 0){
                     gameoverOption--;
                     if(gameoverOption < 0) gameoverOption = 2;
-                }else if(IsKeyPressed(KEY_DOWN)){
+                }else if(IsKeyPressed(KEY_DOWN) || axisY > 0){
                     gameoverOption = (gameoverOption+1) % 3;
-                }else if(IsKeyPressed(KEY_ENTER)){
+                }else if(IsKeyPressed(KEY_ENTER) || confirmButton){
                     switch (gameoverOption){
                     case 0:
                         game->restartLevel(true);
@@ -284,7 +310,7 @@ int main(int argc, char **argv){
             }
         }EndDrawing();
 
-        if(IsKeyPressed(KEY_ESCAPE) || WindowShouldClose()){
+        if(IsKeyPressed(KEY_ESCAPE) || WindowShouldClose() || menuButton){
             menu = !menu;
             gameoverOption = 0;
         }

@@ -35,6 +35,7 @@ void Monster::setGroup(string group){
     }else if(group.find("Fly") != string::npos || group.find("Spider") != string::npos){
         this->directionMovement.y = 1;
     }else if(group.find("Ballon") != string::npos){
+        this->setCollisionBoundsOffset({0,2});
         this->directionMovement.y = 1;
         this->setMovementSpeed(0.0);
     }
