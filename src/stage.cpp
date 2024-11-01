@@ -71,8 +71,8 @@ bool Stage::loadStage(string path, Texture tex){
         auto layerName = layer["name"].asString();
 
         if(this->game){
-            if(!layerName.compare("Birds")) PlayMusicStream(this->game->birds);
-            else if(!layerName.compare("NoBirds")) StopMusicStream(this->game->birds);
+            if(!layerName.compare("Birds") && !IsMusicStreamPlaying(this->game->birds)) PlayMusicStream(this->game->birds);
+            else if(!layerName.compare("NoBirds") && IsMusicStreamPlaying(this->game->birds)) StopMusicStream(this->game->birds);
         }
 
         for(const auto tile: layer["tiles"]){

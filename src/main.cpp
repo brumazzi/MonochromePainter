@@ -138,9 +138,9 @@ int main(int argc, char **argv){
 
         if(IsKeyPressed(KEY_UP) || axisY < 0){
             option--;
-            if(option < 0) option = 3;
+            if(option < 0) option = (saveFile ? 3 : 2);
         }else if(IsKeyPressed(KEY_DOWN) || axisY > 0){
-            option = (option+1) % 5;
+            option = (option+1) % (saveFile ? 4 : 3);
         }else if(IsKeyPressed(KEY_ESCAPE)){
             if(isInitialized()) SteamAPI_Shutdown();
             return 0;
@@ -238,7 +238,7 @@ int main(int argc, char **argv){
     std::sort(game->levelList.begin(), game->levelList.end());
 
     // game->mapIndex = 0;
-    // game->levelIndex = 24;
+    // game->levelIndex = 0;
     stage->loadStage(game->levelList[game->levelIndex], getAsset("tileset", game->mapList[game->mapIndex]));
 
     char score[18];
@@ -277,6 +277,10 @@ int main(int argc, char **argv){
 
             if(game->isGameOver() || menu){
                 DrawRectangle(0, 0, 1280, 720, (Color) {0,0,0, 180});
+                if(game->isGameOver()){
+                    DrawTexturePro(game->gameOverTexture,(Rectangle) {(float) (1280 * (game->gameOverFrame%8)), 0, (float) 1280, (float) 720} ,(Rectangle) {0, 0, (float) 1280, (float) 720}, (Vector2) {0, 100}, 0, WHITE);
+                    if((game->gameOverDelay++)%10 == 0) game->gameOverFrame++;
+                }
                 showMenuGameover(gameoverOption);
 
                 if(IsKeyPressed(KEY_UP) || axisY < 0){

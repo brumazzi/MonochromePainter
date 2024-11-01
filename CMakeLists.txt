@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.28)    # CMake version check
-project(MonochromePainter)             # Create project "MonochromePainter"
+project(MonochromePainter)              # Create project "MonochromePainter"
 set(CMAKE_CXX_STANDARD 17)              # Enable c++17 standard
 
 # Add main.cpp file of the project root directory as a source file

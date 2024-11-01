@@ -51,8 +51,12 @@ class Game{
     void takeConquist(string conquist);
     unsigned int levelIndex;
     vector<Sound> sounds;
+    Texture gameOverTexture;
+    unsigned int gameOverFrame;
+    unsigned int gameOverDelay;
 
     private:
+
     unsigned int saveMsgTimeout;
     Camera2D camera;
     Stage * stage;

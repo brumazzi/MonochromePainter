@@ -32,8 +32,8 @@ Game::Game(){
     this->mapIndex = 0;
     this->mapList.push_back("default");
     this->mapList.push_back("MAP_GREEN");
-    this->mapList.push_back("MAP_RED");
     this->mapList.push_back("MAP_BLUE");
+    this->mapList.push_back("MAP_RED");
     this->mapList.push_back("MAP_YELLO");
     this->mapList.push_back("MAP_BROWN");
     this->mapList.push_back("MAP_PURPLE");
@@ -51,6 +51,10 @@ Game::Game(){
 
     this->birds = LoadMusicStream("sounds/birds.mp3");
     this->birds.looping = true;
+    this->gameOverTexture = LoadTexture("assets/game_over.png");
+    this->gameOverDelay = 1;
+    this->gameOverFrame = 0;
+
     SetMusicVolume(this->birds, 0.6);
 
     for(auto sound: this->sounds){
@@ -199,8 +203,8 @@ void Game::eventEndGame(){
     if(this->lifeCollected == 0) unlockAchieviment("P_ZERO_LIVE");
     if(this->mapIndex == 0) unlockAchieviment("P_ZERO_PAINT");
 
-    if(this->getScore() >= 196) unlockAchieviment("P_PERFECT_POINT");
-    if(this->lifeCollected >= 28) unlockAchieviment("P_FULL_LIVE");
+    if(this->getScore() >= 1805) unlockAchieviment("P_PERFECT_POINT");
+    if(this->lifeCollected >= 37) unlockAchieviment("P_FULL_LIVE");
     if(this->mapIndex == (this->mapList.size())-1) unlockAchieviment("P_BEATFULL_WORLD");
 
     unlockAchieviment("P_GAME_OVER");
