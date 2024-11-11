@@ -61,6 +61,12 @@ Game::Game(){
         SetSoundVolume(sound, 0.15);
     }
 
+    this->soundsAction["item"] = LoadSound("sounds/item.mp3");
+    this->soundsAction["key"] = LoadSound("sounds/key.mp3");
+    this->soundsAction["live"] = LoadSound("sounds/live.mp3");
+    this->soundsAction["jump"] = LoadSound("sounds/jump.mp3");
+    this->soundsAction["monster-jump"] = LoadSound("sounds/monster-jump.mp3");
+
     this->soundIndex = 0;
 }
 Game::~Game(){
@@ -100,6 +106,22 @@ void Game::update(){
     if(!IsSoundPlaying(this->sounds[prevSound])){
         PlaySound(this->sounds[this->soundIndex]);
         this->soundIndex = (this->soundIndex + 1)%this->sounds.size();
+    }
+
+    if(IsKeyPressed(KEY_F5)){
+        vol -= 0.1;
+        if(vol <= 0.0) vol = 0.0;
+
+        int i = this->soundIndex-1;
+        if(i < 0) i = this->sounds.size()-1;
+        SetSoundVolume(this->sounds[i], vol);
+    }else if(IsKeyPressed(KEY_F6)){
+        vol += 0.1;
+        if(vol >= 1.0) vol = 1.0;
+
+        int i = this->soundIndex-1;
+        if(i < 0) i = this->sounds.size()-1;
+        SetSoundVolume(this->sounds[i], vol);
     }
 
     UpdateMusicStream(this->birds);

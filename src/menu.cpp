@@ -5,12 +5,14 @@ static const char *OPTIONS[] = {
     "Continue",
     "New Game",
     "Credits",
+    "Help",
     "Exit",
 };
 
 static const char *OPTIONS2[] = {
     "New Game",
     "Credits",
+    "Help",
     "Exit",
 };
 
@@ -22,7 +24,7 @@ void showMenu(short option, bool hasSaveFile){
     Font font = GetFontDefault();
     const char **options = hasSaveFile ? OPTIONS : OPTIONS2;
 
-    for(int i = 0; i<(hasSaveFile ? 4 : 3); i++){
+    for(int i = 0; i<(hasSaveFile ? 5 : 4); i++){
         bool selected = (i == option);
         float fontSize = selected ? 62 : 24;
 

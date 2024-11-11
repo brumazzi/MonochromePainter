@@ -30,6 +30,8 @@ bool NPC::update(){
 }
 void NPC::jump(){
     if(!this->isGrounded()) return;
+    SetSoundVolume(this->getGame()->soundsAction["jump"], vol+0.4);
+    PlaySound(this->getGame()->soundsAction["jump"]);
 
     this->applyForceY(this->jumpForce);
 }

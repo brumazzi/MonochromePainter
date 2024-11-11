@@ -3,6 +3,7 @@
 #include <stage.hpp>
 #include <iostream>
 #include <steam.hpp>
+#include <assets.h>
 
 static map<string, const char*> textList;
 void initTexts(){
@@ -41,6 +42,9 @@ Object::Object(){
     this->collisionBounds = {0,0,0,0};
     this->collisionBoundsOffset = {0,0};
     this->stage = nullptr;
+    this->windAnimation = 4;
+    this->windNext = 0;
+    this->windIndex = 0;
 }
 Object::~Object(){
     this->collisionCallbacks.clear();
@@ -57,27 +61,47 @@ void Object::draw(){
     }
 
     if(this->texture.id != 0){
-        DrawTexturePro(
-            this->texture,
-            (Rectangle) {
-                (this->textureOffset.x*this->size.x)+(this->animationFrame*this->size.x),
-                (this->textureOffset.y*this->size.y),
-                this->size.x * this->textureScale.x,
-                this->size.y * this->textureScale.y
-            },
-            (Rectangle) {
-                this->position.x,
-                this->position.y,
-                this->size.x,
-                this->size.y
-            },
-            (Vector2) {
-                this->texturePosition.x,
-                this->texturePosition.y,
-            },
-            this->direction,
-            WHITE
-        );
+        if(this->textureOffset.x == 1 && this->textureOffset.y == 20){
+            this->windNext = (this->windNext+1)%this->windAnimation;
+            if(this->windNext == 0) this->windIndex = (this->windIndex+1)%16;
+            Texture t = getAsset("Animated", "wind");
+
+            // DrawRectangle(position.x, position.y, 16, 16, WHITE);
+            DrawTexturePro(
+                t,
+                (Rectangle) {
+                    0, ((float) this->windIndex), this->size.x, this->size.y
+                },
+                (Rectangle) {this->position.x, this->position.y, this->size.x, this->size.y},
+                (Vector2) {
+                    0,
+                    0,
+                },
+                0,
+                WHITE
+            );
+        }else
+            DrawTexturePro(
+                this->texture,
+                (Rectangle) {
+                    (this->textureOffset.x*this->size.x)+(this->animationFrame*this->size.x),
+                    (this->textureOffset.y*this->size.y),
+                    this->size.x * this->textureScale.x,
+                    this->size.y * this->textureScale.y
+                },
+                (Rectangle) {
+                    this->position.x,
+                    this->position.y,
+                    this->size.x,
+                    this->size.y
+                },
+                (Vector2) {
+                    this->texturePosition.x,
+                    this->texturePosition.y,
+                },
+                this->direction,
+                WHITE
+            );
     }
 
     // DrawRectangleLinesEx(this->collisionBounds, 1, WHITE);

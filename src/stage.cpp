@@ -264,3 +264,10 @@ void Stage::updateTexture(){
     }
     this->texture = texture;
 }
+
+void Stage::drawKey(){
+    if(this->hasKey()){
+        Texture t = getAsset("tileset", this->game->mapList[this->game->mapIndex]);
+        DrawTextureRec(t, (Rectangle){17*16, 4*16, 16, 16}, (Vector2){16, 48}, WHITE);
+    }
+}

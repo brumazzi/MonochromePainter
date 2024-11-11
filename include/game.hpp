@@ -15,6 +15,8 @@ using std::string;
 #define CAMERA_WIDTH 384
 #define CAMERA_HEIGHT 216
 
+static float vol = 0.2;
+
 class Game{
     public:
     Game();
@@ -54,6 +56,7 @@ class Game{
     Texture gameOverTexture;
     unsigned int gameOverFrame;
     unsigned int gameOverDelay;
+    map<const char*, Sound> soundsAction;
 
     private:
 

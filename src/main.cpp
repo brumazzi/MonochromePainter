@@ -55,6 +55,24 @@ const Credits CREDITS[] = {
     {0, 0, {0x00, 0x00, 0x00, 0x00}}
 };
 
+const Credits HELP[] = {
+    {64, "HELP", {0xea, 0xc5, 0x50, 0xff}},
+    {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "F11 - Fullscreen", {0x75, 0xa7, 0x43, 0xff}},
+    {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "KEY UP, X and SPACE - Jump", {0x75, 0xa7, 0x43, 0xff}},
+    {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "KEY LEFT and RIGHT - Move", {0x75, 0xa7, 0x43, 0xff}},
+    {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "KEY F5, F6 - Music volume (in game stage)", {0x75, 0xa7, 0x43, 0xff}},
+    {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
+    {18, "\n", {0xc6, 0x51, 0x97, 0xff}},
+    {36, "Find the keys and open door to go to next level", {0xd8, 0x7e, 0x47, 0xff}},
+};
+
 int main(int argc, char **argv){
     SetConfigFlags(FLAG_MSAA_4X_HINT);
     int gamepad = 0;
@@ -67,6 +85,7 @@ int main(int argc, char **argv){
     SetWindowIcon(LoadImage("assets/paint_bucket.png"));
     SetTargetFPS(60);
 
+#ifndef DEBUG
     if(!isInitialized()){
         while(!WindowShouldClose()){
             BeginDrawing();
@@ -78,6 +97,7 @@ int main(int argc, char **argv){
         CloseWindow();
         return 0;
     }
+#endif
 
     bool saveFile = isGameSaved();
     float alpha = 0.0;
@@ -138,9 +158,9 @@ int main(int argc, char **argv){
 
         if(IsKeyPressed(KEY_UP) || axisY < 0){
             option--;
-            if(option < 0) option = (saveFile ? 3 : 2);
+            if(option < 0) option = (saveFile ? 4 : 3);
         }else if(IsKeyPressed(KEY_DOWN) || axisY > 0){
-            option = (option+1) % (saveFile ? 4 : 3);
+            option = (option+1) % (saveFile ? 5 : 4);
         }else if(IsKeyPressed(KEY_ESCAPE)){
             if(isInitialized()) SteamAPI_Shutdown();
             return 0;
@@ -148,7 +168,34 @@ int main(int argc, char **argv){
             if(!saveFile) option++;
 
             if(option == MENU_EXIT) return 0;
-            else if(option == MENU_CREDITS){
+            else if(option == MENU_HELP){
+                while(true){
+                    BeginDrawing();{
+                        ClearBackground(BLACK);
+                        unsigned short i=0;
+
+                        int y = 38;
+                        while(HELP[i].fontSize){
+                            int x;
+                            if(HELP[i].fontSize == 18){
+                                x = GetScreenWidth()/2 - 200;
+                            }else{
+                                x = MeasureText(HELP[i].text, HELP[i].fontSize);
+                                x = (GetScreenWidth()/2) - (x/2);
+                            }
+                            DrawText(HELP[i].text, x, y, HELP[i].fontSize, HELP[i].color);
+                            y += HELP[i].fontSize;
+                            i++;
+                        }
+                    }EndDrawing();
+
+                    if(IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_ENTER)){
+                        option--;
+                        break;
+                    }
+
+                }
+            }else if(option == MENU_CREDITS){
                 while(true){
                     BeginDrawing();{
                         ClearBackground(BLACK);
@@ -207,6 +254,7 @@ int main(int argc, char **argv){
     loadAsset("Animated", "MonsterWalkDamage", "assets/monster_walk_damage.png");
     loadAsset("Animated", "MonsterWalkDamageStop", "assets/monster_walk_damage.png");
     loadAsset("Animated", "MonsterBallon", "assets/monster_ballon.png");
+    loadAsset("Animated", "wind", "assets/wind.png");
 
 
     loadAsset("tileset", "default", "assets/map_ffffff.png");
@@ -242,7 +290,6 @@ int main(int argc, char **argv){
     stage->loadStage(game->levelList[game->levelIndex], getAsset("tileset", game->mapList[game->mapIndex]));
 
     char score[18];
-
     int gameoverOption = 0;
     bool menu = false;
     bool menuButton = false;
@@ -271,6 +318,9 @@ int main(int argc, char **argv){
             BeginMode2D(camera);{
                 for(int x=0; x<game->getLife(); x++){
                     DrawTexture(life, 16*(x+1), 32, WHITE);
+                }
+                if(game->getStage()){
+                    game->getStage()->drawKey();
                 }
                 DrawText(score, 16, 16, 16, WHITE);
             }EndMode2D();

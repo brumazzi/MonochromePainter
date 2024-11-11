@@ -38,6 +38,7 @@ class Stage{
     void addBlock(string layer, BlockInfo block);
     void getKey();
     void finishLevel();
+    void drawKey();
 
     unsigned short getTileSize();
     unsigned int getMapWidth();

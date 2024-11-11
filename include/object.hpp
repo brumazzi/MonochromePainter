@@ -111,6 +111,10 @@ class Object{
     Vector2 collisionBoundsOffset;
     Stage *stage;
     string group;
+
+    int windAnimation;
+    int windNext;
+    int windIndex;
 };
 
 #endif
