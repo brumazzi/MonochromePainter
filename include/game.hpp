@@ -56,7 +56,7 @@ class Game{
     Texture gameOverTexture;
     unsigned int gameOverFrame;
     unsigned int gameOverDelay;
-    map<const char*, Sound> soundsAction;
+    map<string, Sound> soundsAction;
 
     private:
 

@@ -10,12 +10,13 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(OGRE REQUIRED IMPORTED_TARGET jsoncpp)
 link_libraries(m dl pthread raylib jsoncpp steam_api)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -Wl,-rpath=./lib64 -DDEBUG")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -Wl,-rpath=./lib64")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -Wl,-rpath=./lib64 -DDEBUG")
 
 # Add executable target with source files listed in SOURCE_FILES variable
 add_executable(MonochromePainter ${SOURCE_FILES})
 # target_link_libraries(MonochromePainter PUBLIC PkgConfig::OGRE OgreBullet)
 
-# add_custom_command(TARGET MonochromePainter POST_BUILD COMMAND /bin/sh build_stages.sh)
-# add_custom_command(TARGET MonochromePainter POST_BUILD COMMAND wine build.bat)
-# add_custom_command(TARGET MonochromePainter POST_BUILD COMMAND /bin/sh create_zip.sh)
+add_custom_command(TARGET MonochromePainter POST_BUILD COMMAND /bin/sh build_stages.sh)
+add_custom_command(TARGET MonochromePainter POST_BUILD COMMAND wine build.bat)
+add_custom_command(TARGET MonochromePainter POST_BUILD COMMAND /bin/sh create_zip.sh)

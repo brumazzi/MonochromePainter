@@ -130,6 +130,8 @@ int main(int argc, char **argv){
     float axisY = 0;
     bool axisPressed = false;
     bool confirmButton = false;
+    bool jDown = false;
+    bool jUp = false;
 
     menu:
     while(true){
@@ -145,7 +147,6 @@ int main(int argc, char **argv){
             DrawTexture(title, 0, 0, WHITE);
             showMenu(option, saveFile);
             EndMode2D();
-            if(IsKeyDown(KEY_LEFT_ALT)) DrawText("Alt", 0, 0, 16, RED);
         }EndDrawing();
 
         if(IsGamepadAvailable(gamepad)){
@@ -154,12 +155,14 @@ int main(int argc, char **argv){
             if(axisY != 0) axisPressed = true;
             confirmButton = IsGamepadButtonPressed(gamepad, GAMEPAD_BUTTON_RIGHT_FACE_DOWN);
             if(GetGamepadAxisMovement(gamepad, GAMEPAD_AXIS_LEFT_Y) == 0) axisPressed = false;
+            jDown = IsGamepadButtonPressed(gamepad, GAMEPAD_BUTTON_LEFT_FACE_DOWN);
+            jUp = IsGamepadButtonPressed(gamepad, GAMEPAD_BUTTON_LEFT_FACE_UP);
         }
 
-        if(IsKeyPressed(KEY_UP) || axisY < 0){
+        if(IsKeyPressed(KEY_UP) || axisY < 0 || jUp){
             option--;
             if(option < 0) option = (saveFile ? 4 : 3);
-        }else if(IsKeyPressed(KEY_DOWN) || axisY > 0){
+        }else if(IsKeyPressed(KEY_DOWN) || axisY > 0 || jDown){
             option = (option+1) % (saveFile ? 5 : 4);
         }else if(IsKeyPressed(KEY_ESCAPE)){
             if(isInitialized()) SteamAPI_Shutdown();
@@ -305,6 +308,8 @@ int main(int argc, char **argv){
             confirmButton = IsGamepadButtonPressed(gamepad, GAMEPAD_BUTTON_RIGHT_FACE_DOWN);
             if(GetGamepadAxisMovement(gamepad, GAMEPAD_AXIS_LEFT_Y) == 0) axisPressed = false;
             menuButton = IsGamepadButtonPressed(gamepad, GAMEPAD_BUTTON_MIDDLE_RIGHT);
+            jDown = IsGamepadButtonPressed(gamepad, GAMEPAD_BUTTON_LEFT_FACE_DOWN);
+            jUp = IsGamepadButtonPressed(gamepad, GAMEPAD_BUTTON_LEFT_FACE_UP);
         }
 
         if(!game->isGameOver() && !menu) game->update();
@@ -333,10 +338,10 @@ int main(int argc, char **argv){
                 }
                 showMenuGameover(gameoverOption);
 
-                if(IsKeyPressed(KEY_UP) || axisY < 0){
+                if(IsKeyPressed(KEY_UP) || axisY < 0 || jUp){
                     gameoverOption--;
                     if(gameoverOption < 0) gameoverOption = 2;
-                }else if(IsKeyPressed(KEY_DOWN) || axisY > 0){
+                }else if(IsKeyPressed(KEY_DOWN) || axisY > 0 || jDown){
                     gameoverOption = (gameoverOption+1) % 3;
                 }else if(IsKeyPressed(KEY_ENTER) || confirmButton){
                     switch (gameoverOption){
